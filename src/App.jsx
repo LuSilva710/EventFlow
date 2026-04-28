@@ -295,7 +295,6 @@ export default function App() {
               <p className="text-text-muted mb-10">Ingressos disponíveis no seu perfil.</p>
               <div className="flex flex-col gap-4">
                 <button onClick={() => setView('profile')} className="gradient-bg py-4 rounded-xl font-bold">Ver Meus Ingressos</button>
-                <button onClick={() => setView('home')} className="text-text-muted hover:text-white">Voltar</button>
               </div>
             </motion.div>
           )}

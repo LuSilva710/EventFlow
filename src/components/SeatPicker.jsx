@@ -306,7 +306,7 @@ const SeatPicker = ({ onConfirm, category }) => {
               </div>
               <button 
                 onClick={() => onConfirm(selectedSeats)}
-                className="gradient-bg px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-primary/30"
+                className="gradient-bg px-8 p-4 rounded-xl font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-primary/30"
                 style={{ color: 'white' }}
               >
                 Confirmar

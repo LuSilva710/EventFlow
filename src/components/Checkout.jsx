@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, CreditCard, CheckCircle, ChevronRight, ChevronLeft, ShieldCheck, Mail, MapPin } from 'lucide-react';
+import { User, CreditCard, CheckCircle, ChevronRight, ChevronLeft, ShieldCheck, Mail, MapPin, ArrowLeft } from 'lucide-react';
 import BackButton from './BackButton';
+import PrimaryButton from './PrimaryButton';
 
 const Checkout = ({ event, booking, onComplete, onBack }) => {
   const [step, setStep] = useState(1); // 1: Identificação, 2: Pagamento, 3: Confirmação
@@ -59,7 +60,11 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-8 md:px-20">
-      <BackButton onClick={onBack} text="Voltar ao Mapa" style={{ marginTop: 0, marginBottom: '32px' }} />
+      <BackButton 
+        onClick={step === 1 ? onBack : prevStep} 
+        text="Voltar" 
+        style={{ marginTop: 0, marginBottom: '32px' }} 
+      />
       
       <div className="mb-20">
         {renderStepIndicator()}
@@ -101,12 +106,6 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                     </div>
                   </div>
                 </div>
-
-                <div className="flex justify-center pt-6">
-                  <button onClick={nextStep} className="flex items-center gap-3 gradient-bg px-20 p-4 rounded-full font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-110 transition-all duration-300">
-                    Ir para Pagamento <ChevronRight size={18} />
-                  </button>
-                </div>
               </motion.div>
             )}
 
@@ -144,12 +143,6 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                       <input type="text" value={formData.cvv} onChange={e => setFormData({...formData, cvv: e.target.value})} placeholder="123" className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
                     </div>
                   </div>
-                </div>
-
-                <div className="flex justify-between pt-6">
-                  <button onClick={nextStep} className="flex items-center gap-3 gradient-bg px-16 p-4 rounded-full font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-105 transition-transform">
-                    Revisar Pedido <ChevronRight size={18} />
-                  </button>
                 </div>
               </motion.div>
             )}
@@ -190,15 +183,6 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                     </p>
                   </div>
                 </div>
-
-                <div className="flex justify-between pt-6">
-                  <button onClick={prevStep} className="flex items-center gap-2 text-white/40 hover:text-white font-bold transition-colors text-xs uppercase tracking-widest">
-                    <ChevronLeft size={16} /> Voltar
-                  </button>
-                  <button onClick={onComplete} className="flex items-center gap-3 gradient-bg px-16 py-5 rounded-full font-black text-base uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-105 transition-transform">
-                    Finalizar Compra <CheckCircle size={20} />
-                  </button>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -206,53 +190,77 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
 
         {/* SUMMARY SIDE */}
         <div className="space-y-6">
-          <div className="glass p-8 bg-white/[0.02]">
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-6">Resumo do Pedido</h3>
+          <div className="glass overflow-hidden bg-white/[0.02] mt-4">
+            <div className="w-full h-2 relative overflow-hidden ">
+              <img src={event.image} alt={event.title} className="w-full h-full object-cover opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent" />
+            </div>
             
-            <div className="space-y-5 mb-6 pb-6 border-b border-white/5">
-              <div className="flex flex-col gap-4">
-                <div className="w-full h-[50px] rounded-2xl bg-white/5 overflow-hidden border border-white/10">
-                  <img src={event.image} alt={event.title} className="w-full h-full object-cover opacity-50" />
+            <div className="p-8">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-6">Resumo do Pedido</h3>
+              
+              <div className="space-y-5 mb-6 pb-6 border-b border-white/5">
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <h4 className="text-base font-black text-white line-clamp-1 tracking-tight">{event.title}</h4>
+                    <div className="flex items-center gap-1 text-[10px] text-white/40 mt-1 font-bold uppercase tracking-wider">
+                      <MapPin size={10} className="text-primary" /> {event.location}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-base font-black text-white line-clamp-1 tracking-tight">{event.title}</h4>
-                  <div className="flex items-center gap-1 text-[10px] text-white/40 mt-1 font-bold uppercase tracking-wider">
-                    <MapPin size={10} className="text-primary" /> {event.location}
+
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-white/30 font-bold uppercase tracking-tighter">Setor</span>
+                    <span className="text-white font-black">{booking.category.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-white/30 font-bold uppercase tracking-tighter">Ingressos</span>
+                    <span className="text-white font-black">{booking.seats.length}x</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-white/30 font-bold uppercase tracking-tighter">Assentos</span>
+                    <span className="text-white font-black text-right max-w-[140px] truncate">
+                      {booking.seats.join(', ')}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3 pt-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-white/30 font-bold uppercase tracking-tighter">Setor</span>
-                  <span className="text-white font-black">{booking.category.name}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-white/30 font-bold uppercase tracking-tighter">Ingressos</span>
-                  <span className="text-white font-black">{booking.seats.length}x</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-white/30 font-bold uppercase tracking-tighter">Assentos</span>
-                  <span className="text-white font-black text-right max-w-[140px] truncate">
-                    {booking.seats.join(', ')}
-                  </span>
-                </div>
+              <div className="flex justify-between items-end">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Total</span>
+                <span className="text-3xl font-black text-primary tracking-tighter">R$ {totalPrice}</span>
               </div>
-            </div>
-
-            <div className="flex justify-between items-end">
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Total</span>
-              <span className="text-3xl font-black text-primary tracking-tighter">R$ {totalPrice}</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border border-primary/20 bg-primary/5 flex items-start gap-4">
-            <div className="text-primary mt-1"><ShieldCheck size={20} /></div>
-            <div>
-              <h4 className="text-xs font-bold text-white mb-1">Compra Segura</h4>
-              <p className="text-[10px] text-white/40 leading-relaxed">
-                Seus dados são protegidos com criptografia de ponta a ponta.
-              </p>
+          <div className="glass p-8 bg-white/[0.02] flex flex-col gap-6 mt-4">
+            <div className="space-y-4">
+              {step === 1 && (
+                <PrimaryButton onClick={nextStep} icon={ChevronRight} fullWidth>
+                  Ir para Pagamentos
+                </PrimaryButton>
+              )}
+              {step === 2 && (
+                <PrimaryButton onClick={nextStep} icon={ChevronRight} fullWidth>
+                  Revisar Pedidos
+                </PrimaryButton>
+              )}
+              {step === 3 && (
+                <PrimaryButton onClick={onComplete} icon={CheckCircle} fullWidth>
+                  Finalizar Compra
+                </PrimaryButton>
+              )}
+            </div>
+
+            <div className="p-6 rounded-2xl border border-primary/20 bg-primary/5 flex items-start gap-4">
+              <div className="text-primary mt-1"><ShieldCheck size={20} /></div>
+              <div>
+                <h4 className="text-xs font-bold text-white mb-1">Compra Segura</h4>
+                <p className="text-[10px] text-white/40 leading-relaxed">
+                  Seus dados são protegidos com criptografia de ponta a ponta.
+                </p>
+              </div>
             </div>
           </div>
         </div>
