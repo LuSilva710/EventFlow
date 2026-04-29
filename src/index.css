@@ -210,7 +210,7 @@ input:focus::placeholder {
   align-items: center !important;
 }
 
-.ef-input-container svg {
+.ef-input-container > svg {
   position: absolute;
   left: 16px;
   color: var(--text-muted);
@@ -227,7 +227,7 @@ input:focus::placeholder {
   border: 1px solid var(--glass-border) !important;
 }
 
-.ef-input-container:focus-within svg {
+.ef-input-container:focus-within > svg {
   color: var(--primary) !important;
   transform: scale(1.15);
   filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.8));

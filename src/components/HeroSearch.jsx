@@ -1,9 +1,9 @@
 import React from 'react';
 import { Search, MapPin } from 'lucide-react';
 
-const HeroSearch = ({ location, setLocation, cities = [] }) => (
+const HeroSearch = ({ location, setLocation, cities = [], searchQuery, setSearchQuery, onSearch }) => (
   <section className="mb-12 mt-12 md:px-0">
-    <div className="max-w-4xl mx-auto">
+    <div style={{ width: '100%' }}>
       <div 
         className="glass p-2 border border-white/10 shadow-2xl relative"
         style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', borderRadius: '24px' }}
@@ -13,7 +13,9 @@ const HeroSearch = ({ location, setLocation, cities = [] }) => (
             <Search className="text-primary" size={18} style={{ flexShrink: 0 }} />
             <input 
               type="text" 
-              placeholder="Buscar..." 
+              placeholder="Buscar eventos, shows, workshops..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none text-sm placeholder:text-text-muted"
               style={{ flex: 1, minWidth: 0, padding: '16px', margin: '0 4px', outline: 'none' }}
             />
@@ -35,6 +37,7 @@ const HeroSearch = ({ location, setLocation, cities = [] }) => (
           </div>
         </div>
         <button 
+          onClick={onSearch}
           className="gradient-bg font-bold text-sm shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95" 
           style={{ width: '100%', margin: 0, padding: '16px 40px', borderRadius: '18px', border: 'none', color: 'white', cursor: 'pointer' }}
         >

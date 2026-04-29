@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, CreditCard, CheckCircle, ChevronRight, ChevronLeft, ShieldCheck, Mail, MapPin, ArrowLeft } from 'lucide-react';
+import { User, CreditCard, CheckCircle, ChevronRight, ShieldCheck, MapPin, QrCode, Copy, Check } from 'lucide-react';
 import BackButton from './BackButton';
 import PrimaryButton from './PrimaryButton';
 
 const Checkout = ({ event, booking, onComplete, onBack }) => {
-  const [step, setStep] = useState(1); // 1: Identificação, 2: Pagamento, 3: Confirmação
+  const [step, setStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'pix'
+  const [pixCopied, setPixCopied] = useState(false);
   const [formData, setFormData] = useState({
     name: 'João Silva',
     email: 'joao@email.com',
@@ -15,6 +17,14 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
     expiry: '12/28',
     cvv: '123'
   });
+
+  const PIX_KEY = '00020126580014br.gov.bcb.pix0136eventflow-2026@pix.com.br5204000053039865802BR';
+
+  const handleCopyPix = async () => {
+    try { await navigator.clipboard.writeText(PIX_KEY); } catch {}
+    setPixCopied(true);
+    setTimeout(() => setPixCopied(false), 2000);
+  };
 
   const nextStep = () => setStep(s => Math.min(s + 1, 3));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
@@ -31,13 +41,13 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
     <div className="flex items-center justify-center mb-12 px-4">
       {steps.map((s, idx) => (
         <React.Fragment key={s.id}>
-          <div className="flex flex-col items-center relative">
+          <div className="flex flex-col items-center" style={{ gap: '10px' }}>
             <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 ${
               step >= s.id ? 'gradient-bg text-white shadow-lg shadow-primary/30' : 'bg-white/5 text-white/20 border border-white/5'
             }`}>
               <s.icon size={20} />
             </div>
-            <span className={`absolute -bottom-7 whitespace-nowrap text-[10px] font-black uppercase tracking-widest ${
+            <span className={`whitespace-nowrap text-[10px] font-black uppercase tracking-widest ${
               step >= s.id ? 'text-primary' : 'text-white/20'
             }`}>
               {s.label}
@@ -117,33 +127,84 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                 exit={{ opacity: 0, x: -20 }}
                 className="glass p-10 space-y-8"
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 mb-2">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     <CreditCard size={24} />
                   </div>
                   <h3 className="text-xl font-bold">Pagamento</h3>
                 </div>
 
-                <div className="space-y-5">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Número do Cartão</label>
-                    <input type="text" value={formData.cardNumber} onChange={e => setFormData({...formData, cardNumber: e.target.value})} className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Nome no Cartão</label>
-                    <input type="text" value={formData.cardName} onChange={e => setFormData({...formData, cardName: e.target.value})} className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Validade</label>
-                      <input type="text" value={formData.expiry} onChange={e => setFormData({...formData, expiry: e.target.value})} placeholder="MM/AA" className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase font-black tracking-widest text-white/40">CVV</label>
-                      <input type="text" value={formData.cvv} onChange={e => setFormData({...formData, cvv: e.target.value})} placeholder="123" className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
-                    </div>
-                  </div>
+                {/* Tabs método */}
+                <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '4px' }}>
+                  {[
+                    { key: 'card', label: 'Cartão de Crédito', icon: CreditCard },
+                    { key: 'pix', label: 'PIX', icon: QrCode },
+                  ].map(m => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => setPaymentMethod(m.key)}
+                      style={{
+                        flex: 1, padding: '12px 16px', borderRadius: '12px', border: 'none',
+                        background: paymentMethod === m.key ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'transparent',
+                        color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                        fontSize: '13px', fontWeight: paymentMethod === m.key ? '700' : '500',
+                        opacity: paymentMethod === m.key ? 1 : 0.5, transition: 'all 0.3s',
+                      }}
+                    >
+                      <m.icon size={16} /> {m.label}
+                    </button>
+                  ))}
                 </div>
+
+                <AnimatePresence mode="wait">
+                  {paymentMethod === 'card' && (
+                    <motion.div key="card-form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Número do Cartão</label>
+                        <input type="text" value={formData.cardNumber} onChange={e => setFormData({...formData, cardNumber: e.target.value})} className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Nome no Cartão</label>
+                        <input type="text" value={formData.cardName} onChange={e => setFormData({...formData, cardName: e.target.value})} className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-5">
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase font-black tracking-widest text-white/40">Validade</label>
+                          <input type="text" value={formData.expiry} onChange={e => setFormData({...formData, expiry: e.target.value})} placeholder="MM/AA" className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] uppercase font-black tracking-widest text-white/40">CVV</label>
+                          <input type="text" value={formData.cvv} onChange={e => setFormData({...formData, cvv: e.target.value})} placeholder="123" className="w-full bg-white/[0.03] border-white/10 rounded-full px-6 py-4" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {paymentMethod === 'pix' && (
+                    <motion.div key="pix-form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-6">
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '24px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <div style={{ width: '160px', height: '160px', borderRadius: '16px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px' }}>
+                          <QrCode size={120} color="#0a0b10" strokeWidth={1.5} />
+                        </div>
+                        <p className="text-xs text-text-muted text-center" style={{ maxWidth: '280px' }}>Escaneie o QR Code acima com o app do seu banco ou copie o código abaixo.</p>
+                      </div>
+                      <div>
+                        <label className="text-[10px] uppercase font-black tracking-widest text-white/40" style={{ display: 'block', marginBottom: '8px' }}>Código PIX (Copia e Cola)</label>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <input type="text" readOnly value={PIX_KEY} className="bg-white/[0.03] border-white/10 rounded-full px-6 py-4 text-xs font-mono" style={{ flex: 1, minWidth: 0 }} />
+                          <button type="button" onClick={handleCopyPix} style={{ width: '52px', height: '52px', borderRadius: '9999px', background: pixCopied ? 'var(--success)' : 'linear-gradient(135deg, var(--primary), var(--secondary))', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 0.3s' }}>
+                            {pixCopied ? <Check size={18} /> : <Copy size={18} />}
+                          </button>
+                        </div>
+                      </div>
+                      <div style={{ padding: '12px 16px', borderRadius: '12px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <QrCode size={16} className="text-success" style={{ flexShrink: 0 }} />
+                        <span className="text-xs text-success" style={{ fontWeight: 600 }}>O pagamento via PIX é confirmado instantaneamente.</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 
@@ -171,8 +232,17 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                     </div>
                     <div>
                       <h4 className="text-[10px] uppercase font-black tracking-widest text-white/30 mb-3">Pagamento</h4>
-                      <p className="text-sm font-bold text-white">Cartão Final {formData.cardNumber.slice(-4)}</p>
-                      <p className="text-xs text-white/40 mt-1">Crédito à vista</p>
+                      {paymentMethod === 'card' ? (
+                        <>
+                          <p className="text-sm font-bold text-white">Cartão Final {formData.cardNumber.slice(-4)}</p>
+                          <p className="text-xs text-white/40 mt-1">Crédito à vista</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm font-bold text-white">PIX</p>
+                          <p className="text-xs text-white/40 mt-1">Pagamento instantâneo</p>
+                        </>
+                      )}
                     </div>
                   </div>
 

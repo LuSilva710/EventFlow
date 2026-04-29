@@ -1,11 +1,12 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Ticket, Archive, MapPin, Clock, QrCode,
-  Search, ChevronRight, Mail, Sparkles, CheckCircle2,
+  Search, Mail, Sparkles, CheckCircle2,
   TicketCheck, History, Compass, AlertCircle, Shield,
   ChevronDown, Phone, Pencil, Camera, Copy, Check, Globe
 } from 'lucide-react';
+import BackButton from './BackButton';
 
 /*
   UserProfile (Página do Usuário)
@@ -298,7 +299,6 @@ const InfoField = ({ label, value, icon: Icon, copyable }) => {
 
 const ProfileInfoCard = ({ user, memberSince }) => {
   const [avatarUrl, setAvatarUrl] = useState(null);
-  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -308,87 +308,194 @@ const ProfileInfoCard = ({ user, memberSince }) => {
   };
 
   const personalData = [
-    { label: 'Nome completo', value: user?.name, icon: User, copyable: true },
-    { label: 'E-mail', value: user?.email, icon: Mail, copyable: true },
-    { label: 'Telefone', value: '(31) 99556-8057', icon: Phone, copyable: true },
-    { label: 'Documento', value: '136.724.656-31', icon: Shield, copyable: true },
-    { label: 'Idioma', value: 'Português (Brasil)', icon: Globe },
+    { label: 'Nome completo', value: user?.name, icon: User },
+    { label: 'E-mail', value: user?.email, icon: Mail },
+    { label: 'Telefone', value: user?.phone || '(00) 00000-0000', icon: Phone },
+    { label: 'Documento', value: user?.document || '000.000.000-00', icon: Shield },
     { label: 'Membro desde', value: memberSince, icon: CheckCircle2 }
   ];
 
   return (
     <section
       aria-labelledby="profile-info-title"
-      className="glass border border-white/10 mb-8 overflow-hidden"
+      className="mb-8 overflow-hidden"
+      style={{ borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)' }}
     >
-      <div className="relative p-6 md:p-8">
+      {/* ── BANNER GRADIENTE ── */}
+      <div
+        style={{
+          height: '140px',
+          background: 'linear-gradient(135deg, var(--primary), var(--secondary), #22d3ee)',
+          position: 'relative',
+        }}
+      >
         <div
           aria-hidden="true"
-          className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
-            background:
-              'radial-gradient(circle at 0% 0%, rgba(99,102,241,0.25) 0%, transparent 45%), radial-gradient(circle at 100% 100%, rgba(168,85,247,0.18) 0%, transparent 45%)'
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.15) 0%, transparent 60%)',
+          }}
+        />
+        {/* Botão editar no canto do banner */}
+        <button
+          type="button"
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            width: '40px',
+            height: '40px',
+            borderRadius: '14px',
+            background: 'rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+          aria-label="Editar dados pessoais"
+        >
+          <Pencil size={16} aria-hidden="true" />
+        </button>
+      </div>
+
+      {/* ── CORPO DO PERFIL ── */}
+      <div
+        style={{
+          background: 'var(--glass)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          padding: '0 32px 32px 32px',
+        }}
+      >
+        {/* Avatar sobrepondo o banner */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '-56px',
+            position: 'relative',
+            zIndex: 10,
+          }}
+        >
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <div
+              style={{
+                width: '112px',
+                height: '112px',
+                borderRadius: '28px',
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                boxShadow: '0 8px 32px rgba(99,102,241,0.35), 0 0 0 4px var(--bg-dark)',
+                overflow: 'hidden',
+              }}
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt="Avatar"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <User size={48} aria-hidden="true" />
+              )}
+            </div>
+            {/* Botão câmera — canto inferior direito do avatar */}
+            <label
+              title="Alterar foto de perfil"
+              aria-label="Alterar foto de perfil"
+              style={{
+                position: 'absolute',
+                bottom: '-6px',
+                right: '-6px',
+                width: '36px',
+                height: '36px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                border: '3px solid var(--bg-dark)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                zIndex: 11,
+              }}
+            >
+              <Camera size={14} aria-hidden="true" />
+              <input
+                type="file"
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: 'none' }}
+                aria-hidden="true"
+              />
+            </label>
+          </div>
+
+          {/* Nome + Badge centralizados */}
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <h1
+              id="profile-info-title"
+              className="text-2xl font-black text-white leading-tight"
+              style={{ marginBottom: '6px' }}
+            >
+              {user?.name || 'Visitante'}
+            </h1>
+            <p
+              className="text-text-muted text-xs"
+              style={{ marginBottom: '10px' }}
+            >
+              {user?.email || ''}
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <StatusBadge tone="success" icon={Shield}>Conta Verificada</StatusBadge>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div
+          style={{
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+            margin: '24px 0',
           }}
         />
 
-        <div className="relative flex flex-col md:flex-row gap-8">
-          <div className="relative shrink-0 flex flex-col items-center md:items-start gap-4">
-            <div className="relative">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl gradient-bg flex-center text-white shadow-xl shadow-primary/30 overflow-hidden">
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <User size={48} aria-hidden="true" />
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 w-10 h-10 rounded-2xl bg-[#1c1c1e] border border-white/15 flex-center text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary z-10 shadow-lg"
-                title="Alterar foto de perfil"
-                aria-label="Alterar foto de perfil"
-              >
-                <Camera size={18} aria-hidden="true" />
-              </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-                aria-hidden="true"
-              />
-            </div>
+        {/* Dados pessoais */}
+        <div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '16px',
+            }}
+          >
+            <Shield size={14} className="text-success" aria-hidden="true" />
+            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">
+              Dados pessoais protegidos
+            </span>
           </div>
-
-          <div className="flex-1 min-w-0 flex flex-col">
-            <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <StatusBadge tone="success" icon={Shield}>Conta Verificada</StatusBadge>
-                </div>
-                <h1 id="profile-info-title" className="text-2xl md:text-3xl font-black text-white leading-tight mb-1">
-                  Olá, {user?.name?.split(' ')[0] || 'visitante'}!
-                </h1>
-                <p className="text-xs text-text-muted mt-1 flex items-center gap-2">
-                  <Shield size={14} className="text-success" aria-hidden="true" />
-                  <span>Seus dados estão seguros e criptografados.</span>
-                </p>
-              </div>
-              <button
-                type="button"
-                className="w-10 h-10 rounded-2xl flex-center gradient-bg text-white shadow-lg shadow-primary/30 hover:scale-[1.03] transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                aria-label="Editar dados pessoais"
-              >
-                <Pencil size={16} aria-hidden="true" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {personalData.map((field) => (
-                <InfoField key={field.label} {...field} />
-              ))}
-            </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+              gap: '12px',
+            }}
+          >
+            {personalData.map((field) => (
+              <InfoField key={field.label} {...field} />
+            ))}
           </div>
         </div>
       </div>
@@ -445,7 +552,7 @@ const UserProfile = ({ user, tickets, getEventById, onOpenTicket, onGoHome }) =>
 
   const nextEvent = upcoming[0]?.event;
 
-  const memberSince = '12/2023';
+  const memberSince = user?.memberSince || '—';
 
   return (
     <motion.section
@@ -456,16 +563,7 @@ const UserProfile = ({ user, tickets, getEventById, onOpenTicket, onGoHome }) =>
       className="max-w-6xl mx-auto py-8 md:py-12 px-4"
       aria-labelledby="profile-info-title"
     >
-      <nav aria-label="Você está aqui" className="text-xs text-text-muted mb-4 flex items-center gap-2">
-        <button
-          onClick={onGoHome}
-          className="hover:text-white transition-colors focus-visible:outline-none focus-visible:underline"
-        >
-          Início
-        </button>
-        <ChevronRight size={12} aria-hidden="true" />
-        <span className="text-white/80 font-bold">Minha Área</span>
-      </nav>
+      <BackButton onClick={onGoHome} text="Página Inicial" className="mb-8" />
 
       <ProfileInfoCard
         user={user}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, Info } from 'lucide-react';
+import { Mail, Lock, User, Info, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 const GoogleIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" style={{ display: 'block' }}>
@@ -17,15 +17,22 @@ const FacebookIcon = ({ size = 20 }) => (
   </svg>
 );
 
-const Login = ({ onLogin, onGoogleLogin, onFacebookLogin }) => {
+const Login = ({ onLogin, onRegister, onGoogleLogin, onFacebookLogin, loginError }) => {
   const [authMode, setAuthMode] = useState('login');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
-    onLogin(data);
+
+    if (authMode === 'register') {
+      onRegister(data);
+    } else {
+      onLogin(data);
+    }
   };
+
 
   return (
     <motion.div
@@ -94,6 +101,25 @@ const Login = ({ onLogin, onGoogleLogin, onFacebookLogin }) => {
 
             <span className="text-[10px] text-text-muted mb-4 inline-block">ou use sua conta de e-mail:</span>
 
+            {/* --- ERRO DE LOGIN --- */}
+            <AnimatePresence>
+              {loginError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                  className="flex items-center gap-2 px-4 py-3 mb-4 rounded-xl text-left"
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                  }}
+                >
+                  <AlertCircle size={16} className="text-red-400 shrink-0" />
+                  <span className="text-red-300 text-xs font-bold">{loginError}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 items-center w-full">
               {authMode === 'register' && (
                 <div className="ef-input-container w-full">
@@ -107,9 +133,40 @@ const Login = ({ onLogin, onGoogleLogin, onFacebookLogin }) => {
                 <input name="email" id="email" type="email" placeholder="E-mail" required />
               </div>
 
-              <div className="ef-input-container w-full">
+              <div className="ef-input-container w-full" style={{ position: 'relative' }}>
                 <Lock size={18} />
-                <input name="password" id="password" type="password" placeholder="Senha" required />
+                <input
+                  name="password"
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Senha"
+                  required
+                  style={{ paddingRight: '44px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '14px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    padding: '4px',
+                    cursor: 'pointer',
+                    color: 'var(--text-muted)',
+                    zIndex: 11,
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                  onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
 
               {authMode === 'login' && (
@@ -125,6 +182,8 @@ const Login = ({ onLogin, onGoogleLogin, onFacebookLogin }) => {
                 {authMode === 'login' ? 'Entrar' : 'Cadastrar'}
               </button>
             </form>
+
+
           </motion.div>
         </div>
       </div>

@@ -13,6 +13,7 @@ import Checkout from './components/Checkout';
 import DigitalTicket from './components/DigitalTicket';
 import UserProfile from './components/UserProfile';
 import Toast from './components/Toast';
+import { authenticateUser, registerUser } from './data/mockUsers';
 
 // --- MOCK DATA ---
 const CATEGORIES = {
@@ -25,6 +26,7 @@ const EVENTS = [
   {
     id: 1,
     title: "Festival das Luzes 2026",
+    genre: "show",
     date: "2026-05-15T20:00:00",
     location: "Estádio Municipal - São Paulo",
     image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1470&auto=format&fit=crop",
@@ -35,6 +37,7 @@ const EVENTS = [
   {
     id: 2,
     title: "Noite de Jazz no Coreto",
+    genre: "show",
     date: "2026-05-02T19:30:00",
     location: "Parque do Ibirapuera - São Paulo",
     image: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=1633&auto=format&fit=crop",
@@ -45,6 +48,7 @@ const EVENTS = [
   {
     id: 3,
     title: "Rock Underground",
+    genre: "show",
     date: "2026-06-10T22:00:00",
     location: "Clube da Esquina - Ouro Branco",
     image: "https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=1470&auto=format&fit=crop",
@@ -55,6 +59,7 @@ const EVENTS = [
   {
     id: 4,
     title: "Retro 80's & 90's",
+    genre: "show",
     date: "2026-03-10T21:00:00",
     location: "Pousada do Sossego - Belo Horizonte",
     image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1470&auto=format&fit=crop",
@@ -65,12 +70,90 @@ const EVENTS = [
   {
     id: 5,
     title: "Festival de Verão",
+    genre: "show",
     date: "2026-01-20T18:00:00",
     location: "Praia de Copacabana - Rio de Janeiro",
     image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1470&auto=format&fit=crop",
     description: "Os maiores nomes da música brasileira em uma noite à beira-mar.",
     categories: ['normal', 'vip', 'premium'],
     soldOut: true
+  },
+  {
+    id: 6,
+    title: "Hamlet — O Espetáculo",
+    genre: "teatro",
+    date: "2026-06-20T19:00:00",
+    location: "Teatro Municipal - Belo Horizonte",
+    image: "https://images.unsplash.com/photo-1503095396549-807759245b35?q=80&w=1471&auto=format&fit=crop",
+    description: "Uma releitura moderna da obra-prima de Shakespeare com cenografia imersiva e elenco premiado.",
+    categories: ['normal', 'vip'],
+    soldOut: false
+  },
+  {
+    id: 7,
+    title: "Comédia Stand-Up: Risos Garantidos",
+    genre: "teatro",
+    date: "2026-07-05T21:00:00",
+    location: "Casa de Cultura - Curitiba",
+    image: "https://images.unsplash.com/photo-1585699324551-f6c309eedeca?q=80&w=1470&auto=format&fit=crop",
+    description: "Os melhores comediantes do país em uma noite de humor ácido e improviso ao vivo.",
+    categories: ['normal', 'vip'],
+    soldOut: false
+  },
+  {
+    id: 8,
+    title: "Pré-Estreia: Horizonte Perdido",
+    genre: "cinema",
+    date: "2026-05-28T20:30:00",
+    location: "Cinemark Shopping Iguatemi - São Paulo",
+    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1470&auto=format&fit=crop",
+    description: "Sessão exclusiva de pré-estreia do filme mais aguardado do ano com presença do diretor.",
+    categories: ['normal', 'vip'],
+    soldOut: false
+  },
+  {
+    id: 9,
+    title: "Maratona Ghibli em Tela Grande",
+    genre: "cinema",
+    date: "2026-06-15T14:00:00",
+    location: "Cine Belas Artes - São Paulo",
+    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1450&auto=format&fit=crop",
+    description: "Uma jornada mágica por 5 clássicos do Studio Ghibli em projeção 4K restaurada.",
+    categories: ['normal'],
+    soldOut: false
+  },
+  {
+    id: 10,
+    title: "Workshop de UX Design",
+    genre: "workshop",
+    date: "2026-06-22T09:00:00",
+    location: "Hub de Inovação - Belo Horizonte",
+    image: "https://images.unsplash.com/photo-1531498860502-7c67cf02f657?q=80&w=1470&auto=format&fit=crop",
+    description: "Aprenda na prática os fundamentos de pesquisa com usuários, prototipação e testes de usabilidade.",
+    categories: ['normal'],
+    soldOut: false
+  },
+  {
+    id: 11,
+    title: "Bootcamp de Inteligência Artificial",
+    genre: "workshop",
+    date: "2026-07-12T08:30:00",
+    location: "Campus Google - São Paulo",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1470&auto=format&fit=crop",
+    description: "Dois dias intensivos de imersão em Machine Learning, LLMs e aplicações práticas de IA.",
+    categories: ['normal', 'vip'],
+    soldOut: false
+  },
+  {
+    id: 12,
+    title: "Auto da Compadecida — Musical",
+    genre: "teatro",
+    date: "2026-08-01T20:00:00",
+    location: "Teatro Castro Alves - Salvador",
+    image: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=1469&auto=format&fit=crop",
+    description: "A obra de Ariano Suassuna ganha vida em um musical vibrante com trilha sonora original.",
+    categories: ['normal', 'vip', 'premium'],
+    soldOut: false
   }
 ];
 
@@ -78,56 +161,46 @@ const EVENTS = [
 // --- COMPONENTS ---
 
 const CITIES = [
-  'Belo Horizonte, MG',
-  'São Paulo, SP',
-  'Rio de Janeiro, RJ',
-  'Curitiba, PR',
+  'Rio Branco, AC',
+  'Maceió, AL',
+  'Macapá, AP',
+  'Manaus, AM',
+  'Salvador, BA',
+  'Fortaleza, CE',
   'Brasília, DF',
-  'Salvador, BA'
+  'Vitória, ES',
+  'Goiânia, GO',
+  'São Luís, MA',
+  'Cuiabá, MT',
+  'Campo Grande, MS',
+  'Belo Horizonte, MG',
+  'Belém, PA',
+  'João Pessoa, PB',
+  'Curitiba, PR',
+  'Recife, PE',
+  'Teresina, PI',
+  'Rio de Janeiro, RJ',
+  'Natal, RN',
+  'Porto Alegre, RS',
+  'Porto Velho, RO',
+  'Boa Vista, RR',
+  'Florianópolis, SC',
+  'São Paulo, SP',
+  'Aracaju, SE',
+  'Palmas, TO'
 ];
 
 export default function App() {
   const [view, setView] = useState('home');
   const [authMode, setAuthMode] = useState('login'); // login, register
   const [user, setUser] = useState(null);
+  const [loginError, setLoginError] = useState('');
   const [filter, setFilter] = useState('Todos');
+  const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState(CITIES[0]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [booking, setBooking] = useState({ category: null, seats: [] });
-  const [tickets, setTickets] = useState([
-    {
-      id: 'T-100234',
-      eventId: 4,
-      category: 'vip',
-      seats: ['A5', 'A6'],
-      date: '2026-03-10T21:00:00',
-      purchaseDate: '2026-02-15'
-    },
-    {
-      id: 'T-100590',
-      eventId: 5,
-      category: 'normal',
-      seats: [],
-      date: '2026-01-20T18:00:00',
-      purchaseDate: '2025-12-01'
-    },
-    {
-      id: 'T-200781',
-      eventId: 2,
-      category: 'vip',
-      seats: ['B3'],
-      date: '2026-05-02T19:30:00',
-      purchaseDate: '2026-04-10'
-    },
-    {
-      id: 'T-200902',
-      eventId: 1,
-      category: 'premium',
-      seats: ['C12', 'C13'],
-      date: '2026-05-15T20:00:00',
-      purchaseDate: '2026-04-22'
-    }
-  ]);
+  const [tickets, setTickets] = useState([]);
   const [toasts, setToasts] = useState([]);
 
   const addToast = (message, type = 'info', description = '') => {
@@ -169,21 +242,51 @@ export default function App() {
   }, [selectedEvent, booking, view, tickets]);
 
   const handleLogin = (data) => {
-    setUser({ id: 1, name: data.name || 'João Silva', email: data.email || 'joao@email.com' });
-    addToast('Bem-vindo de volta!', 'success', `Olá, ${data.name || 'João'}. Login realizado com sucesso.`);
-    setView('home');
+    setLoginError('');
+    const result = authenticateUser(data.email, data.password);
+    if (result.success) {
+      setUser(result.user);
+      setTickets(result.user.tickets || []);
+      addToast('Bem-vindo de volta!', 'success', `Olá, ${result.user.name.split(' ')[0]}! Login realizado com sucesso.`);
+      setView('home');
+    } else {
+      setLoginError(result.error);
+    }
+  };
+
+  const handleRegister = (data) => {
+    setLoginError('');
+    const result = registerUser(data);
+    if (result.success) {
+      setUser(result.user);
+      setTickets([]);
+      addToast('Conta criada!', 'success', `Bem-vindo(a), ${result.user.name.split(' ')[0]}! Sua conta foi criada com sucesso.`);
+      setView('home');
+    } else {
+      setLoginError(result.error);
+    }
   };
 
   const handleGoogleLogin = () => {
-    // Simulação de login Google
-    setUser({ id: 2, name: 'Usuário Google', email: 'google@email.com' });
-    setView('home');
+    // Simula login social — usa o primeiro usuário do mock
+    const result = authenticateUser('joao@email.com', '1234');
+    if (result.success) {
+      setUser(result.user);
+      setTickets(result.user.tickets || []);
+      addToast('Login Social', 'success', 'Conectado via Google com sucesso.');
+      setView('home');
+    }
   };
 
   const handleFacebookLogin = () => {
-    // Simulação de login Facebook
-    setUser({ id: 3, name: 'Usuário Facebook', email: 'facebook@email.com' });
-    setView('home');
+    // Simula login social — usa o segundo usuário do mock
+    const result = authenticateUser('maria@email.com', '1234');
+    if (result.success) {
+      setUser(result.user);
+      setTickets(result.user.tickets || []);
+      addToast('Login Social', 'success', 'Conectado via Facebook com sucesso.');
+      setView('home');
+    }
   };
 
   const startPurchase = (event) => {
@@ -212,7 +315,10 @@ export default function App() {
 
   const handleLogout = () => {
     setUser(null);
+    setTickets([]);
+    setLoginError('');
     localStorage.removeItem('eventflow_user');
+    localStorage.removeItem('eventflow_tickets');
     addToast('Sessão encerrada', 'info', 'Você saiu da sua conta com segurança.');
     setView('home');
   };
@@ -227,36 +333,87 @@ export default function App() {
         <AnimatePresence mode="wait">
           {view === 'home' && (
             <motion.section key="home" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <HeroSearch location={location} setLocation={setLocation} cities={CITIES} />
+              <HeroSearch
+                location={location}
+                setLocation={setLocation}
+                cities={CITIES}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                onSearch={() => {}}
+              />
 
               <div className="flex flex-col justify-between gap-6 mb-8 mt-12 px-2">
                 <div className="max-w-xl">
                   <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-2">Próximos <span className="gradient-text">Eventos</span></h2>
                   <p className="text-text-muted text-sm md:text-lg">Explore as melhores experiências ao redor do mundo.</p>
                 </div>
-                <div className="flex items-center gap-4 overflow-x-auto pb-4 scroll-x-mobile">
-                  {['Todos', 'Show', 'Festa', 'Teatro', 'Work'].map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setFilter(cat)}
-                      className={`px-6 py-3 rounded-[16px] whitespace-nowrap
-                        ${filter === cat ? 'gradient-bg' : ''}
-                      `}
-                      style={{
-                        border: '0',
-                        color: 'white',
-                        background: filter === cat ? undefined : 'var(--glass)',
-                        backdropFilter: filter === cat ? undefined : 'blur(12px)',
-                        WebkitBackdropFilter: filter === cat ? undefined : 'blur(12px)'
-                      }}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-3 overflow-x-auto pb-4 scroll-x-mobile">
+                  {[
+                    { key: 'Todos', label: 'Todos' },
+                    { key: 'show', label: 'Show' },
+                    { key: 'teatro', label: 'Teatro' },
+                    { key: 'cinema', label: 'Cinema' },
+                    { key: 'workshop', label: 'Workshop' },
+                  ].map(cat => {
+                    const count = cat.key === 'Todos'
+                      ? EVENTS.length
+                      : EVENTS.filter(e => e.genre === cat.key).length;
+                    return (
+                      <button
+                        key={cat.key}
+                        onClick={() => setFilter(cat.key)}
+                        className={`px-6 py-3 rounded-[16px] whitespace-nowrap
+                          ${filter === cat.key ? 'gradient-bg' : ''}
+                        `}
+                        style={{
+                          border: '0',
+                          color: 'white',
+                          background: filter === cat.key ? undefined : 'var(--glass)',
+                          backdropFilter: filter === cat.key ? undefined : 'blur(12px)',
+                          WebkitBackdropFilter: filter === cat.key ? undefined : 'blur(12px)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                        }}
+                      >
+                        {cat.label}
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: '800',
+                            minWidth: '22px',
+                            height: '22px',
+                            borderRadius: '9999px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: filter === cat.key ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
+                            color: filter === cat.key ? 'white' : 'rgba(255,255,255,0.5)',
+                          }}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div className="grid-auto">
-                {EVENTS.map(event => <EventCard key={event.id} event={event} onClick={startPurchase} />)}
+                {EVENTS
+                  .filter(event => filter === 'Todos' || event.genre === filter)
+                  .filter(event => {
+                    if (!searchQuery.trim()) return true;
+                    const q = searchQuery.toLowerCase();
+                    return (
+                      event.title.toLowerCase().includes(q) ||
+                      event.location.toLowerCase().includes(q) ||
+                      event.description.toLowerCase().includes(q)
+                    );
+                  })
+                  .map(event => <EventCard key={event.id} event={event} onClick={startPurchase} />)
+                }
               </div>
             </motion.section>
           )}
@@ -264,8 +421,10 @@ export default function App() {
           {view === 'login' && (
             <Login 
               onLogin={handleLogin}
+              onRegister={handleRegister}
               onGoogleLogin={handleGoogleLogin}
               onFacebookLogin={handleFacebookLogin}
+              loginError={loginError}
             />
           )}
 
