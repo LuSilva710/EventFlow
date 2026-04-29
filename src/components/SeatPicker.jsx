@@ -102,10 +102,10 @@ const SeatPicker = ({ onConfirm, category }) => {
   };
 
   return (
-    <div className="relative w-full h-[650px] bg-[#0d0e14] rounded-[32px] border border-white/5 overflow-hidden">
+    <div className="relative w-full h-[650px] bg-[#0d0e14] rounded-[32px] border border-white/5 flex flex-col">
       
       {/* SEAT MAP CONTAINER - FIXED POSITION, NO DRAG */}
-      <div className="absolute inset-0 overflow-auto flex justify-center pt-32 pb-96">
+      <div className="overflow-auto flex justify-center pt-32 pb-8 px-4 flex-1">
         <motion.div
           animate={{ scale: zoom }}
           className="flex flex-col items-center origin-top h-fit"
@@ -227,8 +227,8 @@ const SeatPicker = ({ onConfirm, category }) => {
 
 
       {/* LEGEND */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 p-8 border-t border-white/10 bg-black/80 backdrop-blur-md flex justify-center">
-        <div className="flex gap-4 md:gap-x-[280px]">
+      <div className="z-20 p-6 md:p-8 border-t border-white/10 bg-black/80 backdrop-blur-md flex justify-center">
+        <div className="flex flex-wrap justify-center gap-4" style={{ columnGap: '2.5rem' }}>
           
           {/* Coluna 1 */}
           <div className="flex flex-col gap-4">
@@ -288,7 +288,7 @@ const SeatPicker = ({ onConfirm, category }) => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-30"
+            className="sticky bottom-4 w-[90%] max-w-xl z-30 mb-4 mx-auto"
           >
             <div className="glass p-4 border border-white/20 shadow-2xl flex items-center justify-between gap-6" style={{ background: 'rgba(10, 11, 16, 0.95)', backdropFilter: 'blur(16px)' }}>
               <div className="flex flex-col">

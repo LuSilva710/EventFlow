@@ -52,26 +52,33 @@ const Navbar = ({ user, setView, onLogout }) => (
           className="gradient-bg flex items-center justify-between w-full h-full rounded-l-[120px] border-l-4 border-white shadow-2xl shadow-primary/30"
           style={{ paddingLeft: '4rem', paddingRight: '4rem' }}
         >
-          <div className="text-left hide-mobile">
-            <p className="text-[12px] font-bold text-white uppercase tracking-widest leading-none mb-2">Bem-vindo(a),</p>
-            <p className="text-[16px] font-black text-white uppercase tracking-tighter leading-none truncate max-w-[150px]">{user.name}</p>
+          <div 
+            className="flex items-center gap-4 cursor-pointer group"
+            onClick={() => setView('profile')}
+          >
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all">
+                <User size={24} color="white" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-success rounded-full border-2 border-primary flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+              </div>
+            </div>
+            <div className="text-left hide-mobile">
+              <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest leading-none mb-1">Área do Cliente</p>
+              <p className="text-[16px] font-black text-white uppercase tracking-tighter leading-none truncate max-w-[150px] group-hover:text-white transition-colors">{user.name}</p>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setView('profile')}
-              className="flex-center p-2 hover:scale-110 transition-all"
-              style={{ background: 'transparent', color: 'white' }}
-            >
-              <User size={28} color="white" />
-            </button>
-            <button 
-              onClick={onLogout} 
-              className="flex-center p-2 hover:scale-110 transition-all"
-              style={{ background: 'transparent', color: 'white' }}
-            >
-              <LogOut size={28} color="white" />
-            </button>
-          </div>
+          
+          <div className="h-10 w-[1px] bg-white/10" />
+
+          <button 
+            onClick={onLogout} 
+            className="w-14 h-14 rounded-2xl bg-white/5 hover:bg-danger/20 hover:border-danger/40 transition-all border border-white/10 flex items-center justify-center group"
+            title="Sair"
+          >
+            <LogOut size={24} color="white" className="group-hover:text-danger transition-colors" />
+          </button>
         </div>
       )}
     </div>

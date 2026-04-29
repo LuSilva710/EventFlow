@@ -73,11 +73,5 @@ src/
 
 ---
 
-## 👨‍💻 Autor
-
-**LuSilva710**  
 Projeto para a disciplina de IHC - IFMG (Sistemas de Informação)
 
----
-
-*Desenvolvido com ❤️ para uma melhor experiência em eventos.*

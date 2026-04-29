@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Ticket, Calendar, MapPin, User, Search,
-  CreditCard, CheckCircle, ChevronLeft, LogIn,
-  LogOut, QrCode, Filter, Clock, Info, ShieldCheck, Mail,
-  Menu
-} from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QRCodeSVG } from 'qrcode.react';
 import Login from './components/Login';
 import BackButton from './components/BackButton';
 import Navbar from './components/Navbar';
@@ -16,6 +10,8 @@ import EventCard from './components/EventCard';
 import EventHero from './components/EventHero';
 import TicketSelector from './components/TicketSelector';
 import Checkout from './components/Checkout';
+import DigitalTicket from './components/DigitalTicket';
+import UserProfile from './components/UserProfile';
 import Toast from './components/Toast';
 
 // --- MOCK DATA ---
@@ -39,8 +35,8 @@ const EVENTS = [
   {
     id: 2,
     title: "Noite de Jazz no Coreto",
-    date: "2026-04-25T19:30:00",
-    location: "Parque do Ibirapuera",
+    date: "2026-05-02T19:30:00",
+    location: "Parque do Ibirapuera - São Paulo",
     image: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=1633&auto=format&fit=crop",
     description: "Um encontro clássico com os maiores expoentes do jazz contemporâneo. Experiência intimista e sofisticada.",
     categories: ['normal', 'vip'],
@@ -59,11 +55,21 @@ const EVENTS = [
   {
     id: 4,
     title: "Retro 80's & 90's",
-    date: "2026-03-10T21:00:00", // Past event
-    location: "Pousada do Sossego",
+    date: "2026-03-10T21:00:00",
+    location: "Pousada do Sossego - Belo Horizonte",
     image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1470&auto=format&fit=crop",
     description: "Uma viagem no tempo com os maiores hits que marcaram gerações.",
     categories: ['normal', 'vip'],
+    soldOut: true
+  },
+  {
+    id: 5,
+    title: "Festival de Verão",
+    date: "2026-01-20T18:00:00",
+    location: "Praia de Copacabana - Rio de Janeiro",
+    image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1470&auto=format&fit=crop",
+    description: "Os maiores nomes da música brasileira em uma noite à beira-mar.",
+    categories: ['normal', 'vip', 'premium'],
     soldOut: true
   }
 ];
@@ -96,6 +102,30 @@ export default function App() {
       seats: ['A5', 'A6'],
       date: '2026-03-10T21:00:00',
       purchaseDate: '2026-02-15'
+    },
+    {
+      id: 'T-100590',
+      eventId: 5,
+      category: 'normal',
+      seats: [],
+      date: '2026-01-20T18:00:00',
+      purchaseDate: '2025-12-01'
+    },
+    {
+      id: 'T-200781',
+      eventId: 2,
+      category: 'vip',
+      seats: ['B3'],
+      date: '2026-05-02T19:30:00',
+      purchaseDate: '2026-04-10'
+    },
+    {
+      id: 'T-200902',
+      eventId: 1,
+      category: 'premium',
+      seats: ['C12', 'C13'],
+      date: '2026-05-15T20:00:00',
+      purchaseDate: '2026-04-22'
     }
   ]);
   const [toasts, setToasts] = useState([]);
@@ -115,11 +145,13 @@ export default function App() {
     const savedEvent = localStorage.getItem('eventflow_selectedEvent');
     const savedBooking = localStorage.getItem('eventflow_booking');
     const savedView = localStorage.getItem('eventflow_view');
+    const savedTickets = localStorage.getItem('eventflow_tickets');
 
     if (savedUser) setUser(JSON.parse(savedUser));
     if (savedEvent) setSelectedEvent(JSON.parse(savedEvent));
     if (savedBooking) setBooking(JSON.parse(savedBooking));
     if (savedView && savedView !== 'login') setView(savedView);
+    if (savedTickets) setTickets(JSON.parse(savedTickets));
   }, []);
 
   // Persistir Usuário
@@ -128,12 +160,13 @@ export default function App() {
     else localStorage.removeItem('eventflow_user');
   }, [user]);
 
-  // Persistir Fluxo de Compra
+  // Persistir Fluxo de Compra e Ingressos
   useEffect(() => {
     if (selectedEvent) localStorage.setItem('eventflow_selectedEvent', JSON.stringify(selectedEvent));
     localStorage.setItem('eventflow_booking', JSON.stringify(booking));
     if (view !== 'login') localStorage.setItem('eventflow_view', view);
-  }, [selectedEvent, booking, view]);
+    localStorage.setItem('eventflow_tickets', JSON.stringify(tickets));
+  }, [selectedEvent, booking, view, tickets]);
 
   const handleLogin = (data) => {
     setUser({ id: 1, name: data.name || 'João Silva', email: data.email || 'joao@email.com' });
@@ -196,21 +229,21 @@ export default function App() {
             <motion.section key="home" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <HeroSearch location={location} setLocation={setLocation} cities={CITIES} />
 
-              <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-8 mt-12 px-2">
+              <div className="flex flex-col justify-between gap-6 mb-8 mt-12 px-2">
                 <div className="max-w-xl">
                   <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-2">Próximos <span className="gradient-text">Eventos</span></h2>
                   <p className="text-text-muted text-sm md:text-lg">Explore as melhores experiências ao redor do mundo.</p>
                 </div>
-                <div className="flex items-center gap-4 overflow-x-auto pb-4 md:pb-0 scroll-x-mobile">
+                <div className="flex items-center gap-4 overflow-x-auto pb-4 scroll-x-mobile">
                   {['Todos', 'Show', 'Festa', 'Teatro', 'Work'].map(cat => (
                     <button
                       key={cat}
                       onClick={() => setFilter(cat)}
-                      className={`px-6 py-3 rounded-[16px] font-bold text-xs transition-all whitespace-nowrap hover:scale-105
-                        ${filter === cat ? 'gradient-bg shadow-xl shadow-primary/30' : ''}
+                      className={`px-6 py-3 rounded-[16px] whitespace-nowrap
+                        ${filter === cat ? 'gradient-bg' : ''}
                       `}
-                      style={{ 
-                        border: '0', 
+                      style={{
+                        border: '0',
                         color: 'white',
                         background: filter === cat ? undefined : 'var(--glass)',
                         backdropFilter: filter === cat ? undefined : 'blur(12px)',
@@ -300,85 +333,27 @@ export default function App() {
           )}
 
           {view === 'profile' && (
-            <motion.section key="profile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <div className="flex flex-col md:flex-row items-center md:justify-between gap-6 mb-12">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="w-20 h-20 rounded-3xl gradient-bg flex-center text-3xl font-bold text-white shadow-xl shadow-primary/20">JS</div>
-                  <div><h1 className="text-3xl mb-1">{user?.name}</h1><p className="text-text-muted text-sm">{user?.email}</p></div>
-                </div>
-                <button onClick={() => setUser(null) || setView('home')} className="glass px-6 py-2 text-danger hover:bg-danger/10 border-danger/20 text-sm font-bold w-full md:w-auto">Sair</button>
-              </div>
-              <div className="mb-8">
-                <div className="flex gap-6 border-b border-glass-border mb-8 overflow-x-auto whitespace-nowrap">
-                  <button className="pb-4 border-b-2 border-primary font-bold">Ingressos ({tickets.length})</button>
-                  <button className="pb-4 text-text-muted">Configurações</button>
-                </div>
-                <div className="flex flex-col gap-10">
-                  <div>
-                    <h3 className="text-[10px] md:text-sm font-bold text-text-muted uppercase mb-6 flex items-center gap-2"><Clock size={16} className="text-primary" /> Próximos Eventos</h3>
-                    <div className="flex flex-col gap-4">
-                      {tickets.filter(t => new Date(t.date) >= new Date()).sort((a, b) => new Date(a.date) - new Date(b.date)).map(ticket => {
-                        const event = getEventById(ticket.eventId);
-                        return (
-                          <div key={ticket.id} className="glass p-5 md:p-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                            <div className="flex gap-4 w-full">
-                              <img src={event.image} alt={event.title} className="w-16 h-16 md:w-24 md:h-24 object-cover rounded-xl shrink-0" />
-                              <div className="flex flex-col justify-center">
-                                <h4 className="text-lg md:text-xl mb-1 line-clamp-1">{event.title}</h4>
-                                <div className="flex flex-col gap-0.5"><span className="text-xs text-text-muted">{new Date(event.date).toLocaleDateString()}</span><span className="text-xs text-primary font-bold">{CATEGORIES[ticket.category.toUpperCase()].name} • {ticket.seats.join(', ')}</span></div>
-                              </div>
-                            </div>
-                            <button onClick={() => setSelectedEvent({ ...event, ticket })} className="w-full md:w-auto glass px-4 py-3 font-bold flex-center gap-2"><QrCode size={18} /> Digital</button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-[10px] md:text-sm font-bold text-text-muted uppercase mb-6">Passados</h3>
-                    <div className="flex flex-col gap-4 opacity-70">
-                      {tickets.filter(t => new Date(t.date) < new Date()).map(ticket => {
-                        const event = getEventById(ticket.eventId);
-                        return (
-                          <div key={ticket.id} className="glass p-5 flex justify-between items-center border-dashed">
-                            <div className="flex gap-4"><img src={event.image} alt={event.title} className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg" /><div><h4 className="text-base md:text-lg mb-1">{event.title}</h4><span className="text-[10px] text-text-muted">{new Date(event.date).toLocaleDateString()}</span></div></div>
-                            <span className="badge badge-muted text-[10px]">Finalizado</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.section>
+            <UserProfile
+              user={user}
+              tickets={tickets}
+              getEventById={getEventById}
+              onOpenTicket={(eventWithTicket) => setSelectedEvent(eventWithTicket)}
+              onGoHome={() => setView('home')}
+            />
           )}
         </AnimatePresence>
       </main>
 
-      {selectedEvent?.ticket && (
-        <div className="fixed inset-0 z-[60] flex-center p-4 md:p-6 bg-black/80 backdrop-blur-sm animate-fade">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-[340px] md:max-w-sm glass overflow-hidden shadow-2xl border-2 border-primary/20">
-            <div className="relative h-32 md:h-40">
-              <img src={getEventById(selectedEvent.ticket.eventId).image} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-              <button onClick={() => setSelectedEvent({ ...selectedEvent, ticket: null })} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex-center text-white text-sm">✕</button>
-            </div>
-            <div className="p-5 md:p-6 text-center">
-              <h3 className="text-xl md:text-2xl font-bold mb-1">{getEventById(selectedEvent.ticket.eventId).title}</h3>
-              <p className="text-primary font-bold mb-6 text-xs">{CATEGORIES[selectedEvent.ticket.category.toUpperCase()].name}</p>
-              <div className="bg-white p-3 rounded-[20px] inline-block mb-6 shadow-glow">
-                <QRCodeSVG value={`TICKET-${selectedEvent.ticket.id}`} size={window.innerWidth < 768 ? 130 : 160} level="H" includeMargin={true} />
-              </div>
-              <div className="grid grid-cols-2 gap-3 md:gap-4 text-left border-t border-glass-border pt-6 mb-4">
-                <div><p className="text-[9px] text-text-muted uppercase font-black">Data</p><p className="font-bold text-xs">{new Date(selectedEvent.ticket.date).toLocaleDateString()}</p></div>
-                <div><p className="text-[9px] text-text-muted uppercase font-black">Lugares</p><p className="font-bold text-xs truncate">{selectedEvent.ticket.seats.join(', ')}</p></div>
-                <div><p className="text-[9px] text-text-muted uppercase font-black">Portão</p><p className="font-bold text-xs">A</p></div>
-                <div><p className="text-[9px] text-text-muted uppercase font-black">Código</p><p className="font-bold text-xs">{selectedEvent.ticket.id}</p></div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedEvent?.ticket && (
+          <DigitalTicket
+            ticket={selectedEvent.ticket}
+            event={selectedEvent}
+            holderName={user?.name}
+            onClose={() => setSelectedEvent({ ...selectedEvent, ticket: null })}
+          />
+        )}
+      </AnimatePresence>
 
       <footer className="mt-20 py-10 border-t border-glass-border text-center text-text-muted text-sm">
         <div className="container">
