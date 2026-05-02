@@ -169,42 +169,46 @@ const SeatPicker = ({ onConfirm, category }) => {
 
           {/* SEATS GRID */}
           <div className="flex flex-col gap-12">
-            {/* VIP SECTION */}
-            <div className="flex flex-col items-center gap-4 p-8 rounded-[40px] border border-yellow-500/10 bg-yellow-500/5 backdrop-blur-sm">
-              <span className="text-[10px] font-black tracking-[0.3em] text-yellow-500/50 uppercase mb-2">Setor Premium VIP</span>
-              <div className="flex gap-4">
-                 <div className="flex flex-col gap-3">
-                    {['L1', 'L2', 'L3'].map(id => renderSeat(id, 'VIP'))}
-                 </div>
-                 <div className="flex flex-col gap-3 justify-center">
-                    <div className="flex gap-3">
-                      {[1, 2, 3, 4, 5, 6].map(col => renderSeat(`A${col}`, 'VIP'))}
-                    </div>
-                    <div className="flex gap-3">
-                      {[1, 2, 3, 4, 5, 6].map(col => renderSeat(`B${col}`, 'VIP'))}
-                    </div>
-                 </div>
-                 <div className="flex flex-col gap-3">
-                    {['R1', 'R2', 'R3'].map(id => renderSeat(id, 'VIP'))}
-                 </div>
+            {/* SEÇÃO VIP - Aparece apenas se o ingresso for VIP ou Premium */}
+            {(category?.id === 'vip' || category?.id === 'premium') && (
+              <div className="flex flex-col items-center gap-4 p-8 rounded-[40px] border border-yellow-500/10 bg-yellow-500/5 backdrop-blur-sm">
+                <span className="text-[10px] font-black tracking-[0.3em] text-yellow-500/50 uppercase mb-2">Setor Premium VIP</span>
+                <div className="flex gap-4">
+                   <div className="flex flex-col gap-3">
+                      {['L1', 'L2', 'L3'].map(id => renderSeat(id, 'VIP'))}
+                   </div>
+                   <div className="flex flex-col gap-3 justify-center">
+                      <div className="flex gap-3">
+                        {[1, 2, 3, 4, 5, 6].map(col => renderSeat(`A${col}`, 'VIP'))}
+                      </div>
+                      <div className="flex gap-3">
+                        {[1, 2, 3, 4, 5, 6].map(col => renderSeat(`B${col}`, 'VIP'))}
+                      </div>
+                   </div>
+                   <div className="flex flex-col gap-3">
+                      {['R1', 'R2', 'R3'].map(id => renderSeat(id, 'VIP'))}
+                   </div>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* GENERAL SECTION */}
-            <div className="flex flex-col items-center gap-4 p-8 rounded-[40px] border border-white/5 bg-white/[0.02]">
-              <span className="text-[10px] font-black tracking-[0.3em] text-white/20 uppercase mb-2">Pista Geral</span>
-              <div className="flex flex-col gap-3">
-                {['C', 'D', 'E', 'F'].map(row => (
-                  <div key={row} className="flex gap-3 items-center">
-                    <span className="w-4 text-[10px] font-bold text-white/20">{row}</span>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(col => renderSeat(`${row}${col}`, 'Pista'))}
-                    <span className="w-4 text-[10px] font-bold text-white/20">{row}</span>
-                  </div>
-                ))}
+            {/* SEÇÃO PISTA - Aparece apenas se o ingresso for Normal (Pista) */}
+            {category?.id === 'normal' && (
+              <div className="flex flex-col items-center gap-4 p-8 rounded-[40px] border border-white/5 bg-white/[0.02]">
+                <span className="text-[10px] font-black tracking-[0.3em] text-white/20 uppercase mb-2">Pista Geral</span>
+                <div className="flex flex-col gap-3">
+                  {['C', 'D', 'E', 'F'].map(row => (
+                    <div key={row} className="flex gap-3 items-center">
+                      <span className="w-4 text-[10px] font-bold text-white/20">{row}</span>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(col => renderSeat(`${row}${col}`, 'Pista'))}
+                      <span className="w-4 text-[10px] font-bold text-white/20">{row}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* PCD / ACESSIBILIDADE */}
+            {/* PCD / ACESSIBILIDADE — always visible */}
             <div className="flex flex-col items-center gap-4 p-8 rounded-[40px] border border-cyan-500/10 bg-cyan-500/5 backdrop-blur-sm">
               <div className="flex items-center gap-2 mb-2">
                 <Accessibility size={14} style={{ color: '#06b6d4' }} />
@@ -226,24 +230,28 @@ const SeatPicker = ({ onConfirm, category }) => {
         <div className="flex flex-wrap justify-center items-stretch gap-4" style={{ columnGap: '2rem' }}>
           {/* Coluna 1 — Tipos */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0" style={{
-                width: '24px', height: '24px', borderRadius: '6px', 
-                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)',
-                fontSize: '9px', fontWeight: '800'
-              }}>1</div>
-              <span className="text-white text-[11px] font-bold whitespace-nowrap">Disponível <span className="text-white/20 font-medium ml-1">— Pista Geral</span></span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0" style={{
-                width: '24px', height: '24px', borderRadius: '6px', 
-                background: 'rgba(234, 179, 8, 0.05)', border: '1px solid rgba(234, 179, 8, 0.3)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#eab308',
-                fontSize: '9px', fontWeight: '800'
-              }}>1</div>
-              <span className="text-yellow-500 text-[11px] font-bold whitespace-nowrap">VIP <span className="text-white/20 font-medium ml-1">— Área Premium</span></span>
-            </div>
+            {category?.id === 'normal' && (
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0" style={{
+                  width: '24px', height: '24px', borderRadius: '6px', 
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)',
+                  fontSize: '9px', fontWeight: '800'
+                }}>1</div>
+                <span className="text-white text-[11px] font-bold whitespace-nowrap">Disponível <span className="text-white/20 font-medium ml-1">— Pista Geral</span></span>
+              </div>
+            )}
+            {(category?.id === 'vip' || category?.id === 'premium') && (
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0" style={{
+                  width: '24px', height: '24px', borderRadius: '6px', 
+                  background: 'rgba(234, 179, 8, 0.05)', border: '1px solid rgba(234, 179, 8, 0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#eab308',
+                  fontSize: '9px', fontWeight: '800'
+                }}>1</div>
+                <span className="text-yellow-500 text-[11px] font-bold whitespace-nowrap">VIP <span className="text-white/20 font-medium ml-1">— Área Premium</span></span>
+              </div>
+            )}
           </div>
 
           <div className="w-[1px] bg-white/10" />

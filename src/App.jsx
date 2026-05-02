@@ -51,7 +51,7 @@ const EVENTS = [
     genre: "show",
     date: "2026-06-10T22:00:00",
     location: "Clube da Esquina - Ouro Branco",
-    image: "https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=1470&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=1470&auto=format&fit=crop",
     description: "As bandas que estão moldando a nova cena do rock nacional se encontram em uma noite histórica.",
     categories: ['normal'],
     soldOut: false

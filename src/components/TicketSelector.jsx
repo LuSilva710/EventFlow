@@ -55,7 +55,13 @@ const TicketSelector = ({ event, categories, booking, setBooking, user, setView 
                     e.stopPropagation();
                     setBooking(prev => {
                       const newBasket = { ...(prev.basket || {}), [cat.id]: Math.max(0, qty - 1) };
-                      return { ...prev, basket: newBasket, category: newBasket[cat.id] > 0 ? cat : prev.category };
+                      // Se a categoria atual foi zerada, tenta pegar outra categoria que tenha ingressos no basket
+                      let newCategory = prev.category;
+                      if (newBasket[cat.id] === 0 && prev.category?.id === cat.id) {
+                        const otherCatId = Object.keys(newBasket).find(id => newBasket[id] > 0);
+                        newCategory = otherCatId ? categories[otherCatId.toUpperCase()] : null;
+                      }
+                      return { ...prev, basket: newBasket, category: newCategory };
                     });
                   }}
                 >-</button>
