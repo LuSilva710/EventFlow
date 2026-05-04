@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Login from './components/Login';
 import BackButton from './components/BackButton';
@@ -13,6 +13,7 @@ import Checkout from './components/Checkout';
 import DigitalTicket from './components/DigitalTicket';
 import UserProfile from './components/UserProfile';
 import Toast from './components/Toast';
+import HelpCenter from './components/HelpCenter';
 import { authenticateUser, registerUser } from './data/mockUsers';
 
 // --- MOCK DATA ---
@@ -202,6 +203,7 @@ export default function App() {
   const [booking, setBooking] = useState({ category: null, seats: [] });
   const [tickets, setTickets] = useState([]);
   const [toasts, setToasts] = useState([]);
+  const [showHelp, setShowHelp] = useState(false);
 
   const addToast = (message, type = 'info', description = '') => {
     const id = Date.now();
@@ -521,6 +523,34 @@ export default function App() {
       </footer>
       {/* Sistema de Notificações */}
       <Toast toasts={toasts} removeToast={removeToast} />
+
+      {/* Botão Flutuante de Ajuda (Heurística 10) */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowHelp(true)}
+        className="fixed rounded-full gradient-bg flex items-center justify-center"
+        style={{
+          bottom: '2rem',
+          left: '2rem',
+          width: '4rem',
+          height: '4rem',
+          zIndex: 9999,
+          cursor: 'pointer',
+          border: '2px solid rgba(255,255,255,0.2)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+        }}
+        title="Ajuda e Documentação"
+      >
+        <HelpCircle size={32} color="white" />
+      </motion.button>
+
+      {/* Central de Ajuda */}
+      <AnimatePresence>
+        {showHelp && (
+          <HelpCenter onClose={() => setShowHelp(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
