@@ -39,8 +39,23 @@ const HELP_TOPICS = [
     icon: <User size={20} />,
     questions: [
       {
-        q: 'Como altero meus dados cadastrais?',
-        a: 'No momento, para alterar dados como e-mail ou nome, você deve entrar em contato com nosso suporte através do chat ou e-mail de atendimento.'
+        q: 'Como solicitar suporte especial no evento?',
+        a: 'Recomendamos que entre em contato conosco com pelo menos 48h de antecedência ao evento para que possamos alinhar com a produção local a melhor forma de atendê-lo.'
+      }
+    ]
+  },
+  {
+    id: 'heuristics',
+    category: 'Heurísticas UX',
+    icon: <Book size={20} />,
+    questions: [
+      {
+        q: 'O que é a 10ª Heurística de Nielsen neste projeto?',
+        a: 'A 10ª Heurística de Nielsen (Ajuda e Documentação) afirma que o sistema deve ser fácil de usar sem manuais, mas que ajuda deve estar disponível quando necessário.\n\nNeste projeto, ela está presente através de:\n1. Busca Facilitada: Pesquisa em tempo real para dúvidas comuns.\n2. Foco na Tarefa: Organização por categorias lógicas (Compras, Ingressos, etc).\n3. Passos Concretos: Instruções numeradas e diretas para ações críticas.\n4. Acesso Rápido: Botão flutuante visível em todas as telas.'
+      },
+      {
+        q: 'Como o suporte ao usuário foi planejado?',
+        a: 'O suporte foi planejado para ser preventivo (FAQ) e reativo (Chat/Suporte direto). O objetivo é garantir que o usuário nunca fique "travado" em uma etapa do fluxo de compra.'
       }
     ]
   },
@@ -57,7 +72,7 @@ const HELP_TOPICS = [
   }
 ];
 
-export default function HelpCenter({ onClose }) {
+export default function HelpCenter({ onClose, onOpenChat }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [activeQuestion, setActiveQuestion] = useState(null);
@@ -197,7 +212,10 @@ export default function HelpCenter({ onClose }) {
 
             <div style={{ marginTop: '32px', padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <p style={{ color: 'white', fontWeight: '700', fontSize: '14px', marginBottom: '8px' }}>Ainda com dúvidas?</p>
-              <button style={{ width: '100%', padding: '12px', background: COLORS.primary, color: 'white', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <button 
+                onClick={onOpenChat}
+                style={{ width: '100%', padding: '12px', background: COLORS.primary, color: 'white', borderRadius: '10px', fontWeight: '800', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
                 <MessageSquare size={14} /> CHAT AO VIVO
               </button>
             </div>

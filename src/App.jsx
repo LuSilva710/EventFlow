@@ -14,6 +14,7 @@ import DigitalTicket from './components/DigitalTicket';
 import UserProfile from './components/UserProfile';
 import Toast from './components/Toast';
 import HelpCenter from './components/HelpCenter';
+import LiveChat from './components/LiveChat';
 import { authenticateUser, registerUser } from './data/mockUsers';
 
 // --- MOCK DATA ---
@@ -204,6 +205,7 @@ export default function App() {
   const [tickets, setTickets] = useState([]);
   const [toasts, setToasts] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   const addToast = (message, type = 'info', description = '') => {
     const id = Date.now();
@@ -548,7 +550,20 @@ export default function App() {
       {/* Central de Ajuda */}
       <AnimatePresence>
         {showHelp && (
-          <HelpCenter onClose={() => setShowHelp(false)} />
+          <HelpCenter 
+            onClose={() => setShowHelp(false)} 
+            onOpenChat={() => {
+              setShowHelp(false);
+              setShowChat(true);
+            }} 
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Chat ao Vivo (Simulado) */}
+      <AnimatePresence>
+        {showChat && (
+          <LiveChat onClose={() => setShowChat(false)} />
         )}
       </AnimatePresence>
     </div>
