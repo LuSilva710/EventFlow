@@ -98,14 +98,14 @@ const StatCard = ({ icon: Icon, label, value, sublabel, tone = 'primary' }) => {
 
 const StatusBadge = ({ children, tone = 'primary', icon: Icon }) => {
   const tones = {
-    primary: 'bg-primary/15 text-primary border-primary/30',
-    success: 'bg-success/15 text-success border-success/30',
-    warning: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-    muted: 'bg-white/10 text-white/70 border-white/15'
+    primary: 'bg-primary/20 text-white border-primary/40',
+    success: 'bg-success/20 text-success border-success/40',
+    warning: 'bg-amber-500 text-black border-amber-600',
+    muted: 'bg-white/10 text-white border-white/20'
   };
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${tones[tone]}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-black uppercase tracking-widest ${tones[tone]}`}
     >
       {Icon && <Icon size={11} aria-hidden="true" />}
       {children}

@@ -4,7 +4,18 @@ import { CheckCircle, XCircle, Info, X } from 'lucide-react';
 
 const Toast = ({ toasts, removeToast }) => {
   return (
-    <div className="fixed bottom-8 right-8 z-[100] flex flex-col gap-3 pointer-events-none">
+    <div 
+      style={{ 
+        position: 'fixed', 
+        bottom: '32px', 
+        right: '32px', 
+        zIndex: 20000, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '12px', 
+        pointerEvents: 'none' 
+      }}
+    >
       <AnimatePresence>
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onRemove={() => removeToast(toast.id)} />
@@ -55,9 +66,28 @@ const ToastItem = ({ toast, onRemove }) => {
 
       <button 
         onClick={onRemove}
-        className="text-white/20 hover:text-white transition-colors"
+        style={{ 
+          background: 'rgba(255,255,255,0.05)', 
+          border: '1px solid rgba(255,255,255,0.1)', 
+          borderRadius: '10px', 
+          padding: '6px', 
+          color: 'rgba(255,255,255,0.4)', 
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+          e.currentTarget.style.color = 'white';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+          e.currentTarget.style.color = 'rgba(255,255,255,0.4)';
+        }}
       >
-        <X size={16} />
+        <X size={14} />
       </button>
 
       {/* Progress bar */}

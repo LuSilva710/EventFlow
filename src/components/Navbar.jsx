@@ -1,12 +1,12 @@
 import React from 'react';
 import { Ticket, LogIn, User, LogOut } from 'lucide-react';
 
-const Navbar = ({ user, setView, onLogout }) => (
+const Navbar = ({ user, setView, onGoHome, onLogout }) => (
   <nav className="sticky top-0 z-50 w-full h-[180px] flex justify-between items-stretch bg-[#0a0b10] border-b border-white/5 transition-all shadow-2xl">
     
     {/* LADO ESQUERDO: LOGO */}
     <div 
-      onClick={() => setView('home')}
+      onClick={onGoHome}
       className="nav-side-block logo-block cursor-pointer group px-16 relative gradient-bg shadow-2xl shadow-primary/20 rounded-r-[80px] border-r-2 border-white/20 flex items-center"
       style={{ minWidth: '400px' }}
     >

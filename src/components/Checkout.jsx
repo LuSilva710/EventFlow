@@ -135,7 +135,7 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                 </div>
 
                 {/* Tabs método */}
-                <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '4px' }}>
+                <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '4px', marginBottom: '32px' }}>
                   {[
                     { key: 'card', label: 'Cartão de Crédito', icon: CreditCard },
                     { key: 'pix', label: 'PIX', icon: QrCode },
@@ -189,7 +189,7 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                         </div>
                         <p className="text-xs text-text-muted text-center" style={{ maxWidth: '280px' }}>Escaneie o QR Code acima com o app do seu banco ou copie o código abaixo.</p>
                       </div>
-                      <div>
+                      <div className="pt-4">
                         <label className="text-[10px] uppercase font-black tracking-widest text-white/40" style={{ display: 'block', marginBottom: '8px' }}>Código PIX (Copia e Cola)</label>
                         <div style={{ display: 'flex', gap: '8px' }}>
                           <input type="text" readOnly value={PIX_KEY} className="bg-white/[0.03] border-white/10 rounded-full px-6 py-4 text-xs font-mono" style={{ flex: 1, minWidth: 0 }} />
@@ -246,10 +246,10 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                     </div>
                   </div>
 
-                  <div className="p-6 rounded-[24px] bg-white/[0.02] border border-white/5 space-y-3">
+                  <div className="p-8 rounded-[24px] bg-white/[0.02] border border-white/5 space-y-4 mt-12">
                     <h4 className="text-[10px] uppercase font-black tracking-widest text-white/30">Termos e Privacidade</h4>
                     <p className="text-[11px] text-white/40 leading-relaxed">
-                      Ao finalizar a compra, você concorda com nossos termos de serviço e política de cancelamento.
+                      Ao clicar em finalizar a compra, você confirma que leu e concorda com nossos termos de serviço, política de privacidade e condições de cancelamento do evento.
                     </p>
                   </div>
                 </div>
@@ -260,8 +260,8 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
 
         {/* SUMMARY SIDE */}
         <div className="space-y-6">
-          <div className="glass overflow-hidden bg-white/[0.02] mt-4">
-            <div className="w-full h-2 relative overflow-hidden ">
+          <div className="glass overflow-hidden bg-white/[0.02]">
+            <div className="w-full h-24 relative overflow-hidden ">
               <img src={event.image} alt={event.title} className="w-full h-full object-cover opacity-30" />
               <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent" />
             </div>
@@ -279,7 +279,7 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 pt-2 pb-4">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-white/30 font-bold uppercase tracking-tighter">Setor</span>
                     <span className="text-white font-black">{booking.category.name}</span>
@@ -288,11 +288,19 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
                     <span className="text-white/30 font-bold uppercase tracking-tighter">Ingressos</span>
                     <span className="text-white font-black">{booking.seats.length}x</span>
                   </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/30 font-bold uppercase tracking-tighter">Assentos</span>
-                    <span className="text-white font-black text-right max-w-[140px] truncate">
-                      {booking.seats.join(', ')}
-                    </span>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-white/30 font-bold uppercase tracking-tighter text-[10px] mt-1">Assentos</span>
+                    <div className="flex flex-wrap gap-1 justify-end max-w-[100px]">
+                      {booking.seats.map(id => (
+                        <div 
+                          key={id} 
+                          style={{ width: '28px', height: '18px' }} 
+                          className="bg-white/5 border border-white/5 rounded flex items-center justify-center text-white font-black text-[9px]"
+                        >
+                          {id}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -304,7 +312,7 @@ const Checkout = ({ event, booking, onComplete, onBack }) => {
             </div>
           </div>
 
-          <div className="glass p-8 bg-white/[0.02] flex flex-col gap-6 mt-4">
+          <div className="glass p-8 bg-white/[0.02] flex flex-col gap-6">
             <div className="space-y-4">
               {step === 1 && (
                 <PrimaryButton onClick={nextStep} icon={ChevronRight} fullWidth>

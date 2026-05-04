@@ -100,14 +100,14 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
         transition={{ type: 'spring', stiffness: 240, damping: 24 }}
         className="relative w-full max-w-[400px] flex flex-col pointer-events-auto my-8"
       >
-        <div className="flex justify-between items-center px-2 mb-4">
+        <div className="flex justify-between items-center px-2 mb-6 mt-4">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-xl gradient-bg flex-center shadow-lg shadow-primary/30">
               <Ticket size={18} className="text-white" aria-hidden="true" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="font-black tracking-tighter text-base uppercase text-white">EventFlow</span>
-              <span className="text-[9px] font-bold text-white/50 uppercase tracking-[0.25em]">
+              <span className="font-black tracking-tighter text-base uppercase text-primary">EventFlow</span>
+              <span className="text-[9px] font-black text-primary uppercase tracking-[0.1em]">
                 Ingresso Digital
               </span>
             </div>
@@ -117,9 +117,28 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
             onClick={onClose}
             type="button"
             aria-label="Fechar"
-            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex-center text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{ 
+              background: 'rgba(99, 102, 241, 0.1)', 
+              border: '1px solid rgba(99, 102, 241, 0.2)', 
+              borderRadius: '12px', 
+              padding: '8px', 
+              color: '#6366f1', 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
+              e.currentTarget.style.color = '#818cf8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+              e.currentTarget.style.color = '#6366f1';
+            }}
           >
-            <X size={18} aria-hidden="true" />
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
 
@@ -127,7 +146,7 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
           aria-label={`Ingresso para ${event.title}`}
           className="relative overflow-hidden rounded-[32px] shadow-2xl border border-white/10 bg-[#1c1c1e]"
         >
-          <header className="relative h-44 overflow-hidden">
+          <header className="relative h-32 overflow-hidden">
             <img src={event.image} alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c1e] via-[#1c1c1e]/40 to-black/20" />
             <div className="absolute top-4 left-4 right-4 flex justify-between">
@@ -158,7 +177,7 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
             </div>
           </header>
 
-          <div className="px-6 py-6">
+          <div className="px-6 py-4">
             <dl className="grid grid-cols-2 gap-y-5">
               <div>
                 <dt className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest mb-1">Data</dt>
@@ -212,8 +231,8 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
             <div className="w-full border-t-2 border-dashed border-white/10 mx-6" />
           </div>
 
-          <div className="px-6 pb-8 pt-2">
-            <div className="flex justify-between items-end mb-6">
+          <div className="px-6 pb-6 pt-1">
+            <div className="flex justify-between items-end mb-4">
               <div>
                 <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest block mb-1">
                   Setor
@@ -238,7 +257,7 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
               >
                 <QRCodeSVG
                   value={`EVENTFLOW-${ticket.id}`}
-                  size={160}
+                  size={140}
                   level="H"
                   includeMargin={false}
                 />
@@ -250,7 +269,7 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
                 >
                   {ticket.id}
                 </p>
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-300">
+                <div className="flex items-center gap-1.5 py-2 text-[11px] text-zinc-300">
                   <ShieldCheck size={12} className="text-success" aria-hidden="true" />
                   <span>Ingresso verificado e criptografado</span>
                 </div>
@@ -259,22 +278,24 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
           </div>
         </article>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={handleShare}
-            className="flex-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl py-3.5 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            style={{ background: '#27272a', border: '1px solid rgba(255,255,255,0.1)' }}
+            className="flex items-center justify-center gap-2 rounded-2xl py-4 transition-all hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <Share2 size={18} className="text-zinc-300 group-hover:text-white" aria-hidden="true" />
-            <span className="font-bold text-sm text-zinc-200 group-hover:text-white">Compartilhar</span>
+            <Share2 size={18} className="text-white" aria-hidden="true" />
+            <span className="font-bold text-sm text-white">Compartilhar</span>
           </button>
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl py-3.5 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            style={{ background: '#27272a', border: '1px solid rgba(255,255,255,0.1)' }}
+            className="flex items-center justify-center gap-2 rounded-2xl py-4 transition-all hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <Download size={18} className="text-zinc-300 group-hover:text-white" aria-hidden="true" />
-            <span className="font-bold text-sm text-zinc-200 group-hover:text-white">Salvar PDF</span>
+            <Download size={18} className="text-white" aria-hidden="true" />
+            <span className="font-bold text-sm text-white">Salvar PDF</span>
           </button>
         </div>
 
@@ -283,7 +304,7 @@ const DigitalTicket = ({ ticket, event, onClose, holderName }) => {
           className="mt-5 flex items-center justify-center gap-2 text-zinc-400 text-xs px-4 text-center"
         >
           <Info size={14} className="shrink-0" aria-hidden="true" />
-          <span>Apresente este QR Code na entrada do evento. Pressione Esc para fechar.</span>
+          <span>Apresente este QR Code na entrada do evento.</span>
         </div>
       </motion.div>
     </motion.div>

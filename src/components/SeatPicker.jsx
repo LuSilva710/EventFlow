@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Accessibility } from 'lucide-react';
+import { Lock, Accessibility, Ticket } from 'lucide-react';
 
 const SeatPicker = ({ onConfirm, category }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
@@ -293,55 +293,91 @@ const SeatPicker = ({ onConfirm, category }) => {
         </div>
       </div>
 
-      {/* FLOATING ACTION BAR */}
+      {/* FLOATING ACTION BAR (REFACTORED) */}
       <AnimatePresence>
         {selectedSeats.length > 0 && (
           <motion.div 
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
+            initial={{ y: 50, opacity: 0, scale: 0.9 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 50, opacity: 0, scale: 0.9 }}
             style={{
               position: 'fixed',
-              bottom: '24px',
-              right: '24px',
-              width: '280px',
-              zIndex: 50,
+              bottom: '32px',
+              right: '32px',
+              width: '320px',
+              zIndex: 100,
             }}
           >
             <div
               style={{
-                background: 'rgba(10, 11, 16, 0.95)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '20px',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
-                padding: '25px',
+                background: 'rgba(15, 17, 26, 0.85)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '28px',
+                boxShadow: '0 30px 70px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.05)',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '12px',
+                gap: '16px',
               }}
             >
-              <div>
-                <span className="text-[10px] font-bold text-white/50 uppercase tracking-tighter">Assentos</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {selectedSeats.map(id => (
-                    <span key={id} className="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded border border-primary/30 font-black">{id}</span>
-                  ))}
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2">Ingressos</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedSeats.map(id => (
+                      <motion.span 
+                        key={id} 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-primary/10 text-primary text-[11px] px-2.5 py-1 rounded-lg border border-primary/20 font-black flex items-center gap-1.5"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        {id}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                  <Ticket size={16} className="text-white/60" />
                 </div>
               </div>
-              <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-white/50 uppercase tracking-tighter">Total</span>
-                <span className="text-lg font-black text-white">R$ {selectedSeats.length * category.price}</span>
+
+              <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)' }} />
+              
+              <div className="flex justify-between items-end">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Total do Pedido</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-sm font-bold text-white/60">R$</span>
+                    <span className="text-3xl font-black text-white leading-none">
+                      {(selectedSeats.length * category.price).toLocaleString('pt-BR')}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-[11px] font-bold text-success bg-success/10 px-2 py-1 rounded-md border border-success/20">
+                  {selectedSeats.length} {selectedSeats.length === 1 ? 'Lugar' : 'Lugares'}
+                </div>
               </div>
+
               <button 
                 onClick={() => onConfirm(selectedSeats)}
-                className="gradient-bg rounded-xl font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 shadow-lg shadow-primary/30"
-                style={{ color: 'white', padding: '12px', width: '100%' }}
+                className="gradient-bg rounded-2xl font-black uppercase text-[11px] tracking-[0.15em] hover:scale-[1.03] active:scale-[0.97] transition-all"
+                style={{ 
+                  color: 'white', 
+                  padding: '18px', 
+                  width: '100%',
+                  boxShadow: '0 12px 24px -6px rgba(99, 102, 241, 0.5)',
+                  cursor: 'pointer'
+                }}
               >
-                Confirmar
+                Prosseguir para Checkout
               </button>
+              
+              <p className="text-[9px] text-center text-white/30 font-medium">
+                Taxas de serviço calculadas na próxima etapa
+              </p>
             </div>
           </motion.div>
         )}

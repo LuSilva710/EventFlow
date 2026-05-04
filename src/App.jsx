@@ -252,7 +252,7 @@ export default function App() {
       setUser(result.user);
       setTickets(result.user.tickets || []);
       addToast('Bem-vindo de volta!', 'success', `Olá, ${result.user.name.split(' ')[0]}! Login realizado com sucesso.`);
-      setView('home');
+      handleGoHome();
     } else {
       setLoginError(result.error);
     }
@@ -265,7 +265,7 @@ export default function App() {
       setUser(result.user);
       setTickets([]);
       addToast('Conta criada!', 'success', `Bem-vindo(a), ${result.user.name.split(' ')[0]}! Sua conta foi criada com sucesso.`);
-      setView('home');
+      handleGoHome();
     } else {
       setLoginError(result.error);
     }
@@ -278,7 +278,7 @@ export default function App() {
       setUser(result.user);
       setTickets(result.user.tickets || []);
       addToast('Login Social', 'success', 'Conectado via Google com sucesso.');
-      setView('home');
+      handleGoHome();
     }
   };
 
@@ -289,12 +289,19 @@ export default function App() {
       setUser(result.user);
       setTickets(result.user.tickets || []);
       addToast('Login Social', 'success', 'Conectado via Facebook com sucesso.');
-      setView('home');
+      handleGoHome();
     }
+  };
+
+  const handleGoHome = () => {
+    setFilter('Todos');
+    setSearchQuery('');
+    setView('home');
   };
 
   const startPurchase = (event) => {
     setSelectedEvent(event);
+    setBooking({ category: CATEGORIES[0], seats: [] });
     setView('event');
   };
 
@@ -324,14 +331,14 @@ export default function App() {
     localStorage.removeItem('eventflow_user');
     localStorage.removeItem('eventflow_tickets');
     addToast('Sessão encerrada', 'info', 'Você saiu da sua conta com segurança.');
-    setView('home');
+    handleGoHome();
   };
 
   const getEventById = (id) => EVENTS.find(e => e.id === id);
 
   return (
     <div className="min-h-screen pb-20">
-      <Navbar user={user} setView={setView} onLogout={handleLogout} />
+      <Navbar user={user} setView={setView} onGoHome={handleGoHome} onLogout={handleLogout} />
 
       <main className="container">
         <AnimatePresence mode="wait">
@@ -434,7 +441,7 @@ export default function App() {
 
           {view === 'event' && (
             <motion.div key="event" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="flex flex-col gap-8 md:gap-12 w-full">
-              <BackButton onClick={() => setView('home')} />
+              <BackButton onClick={handleGoHome} />
 
               {/* CAPA - HERO IMAGE */}
               <EventHero event={selectedEvent} />
@@ -501,7 +508,7 @@ export default function App() {
               tickets={tickets}
               getEventById={getEventById}
               onOpenTicket={(eventWithTicket) => setSelectedEvent(eventWithTicket)}
-              onGoHome={() => setView('home')}
+              onGoHome={handleGoHome}
             />
           )}
         </AnimatePresence>
